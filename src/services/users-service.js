@@ -1,7 +1,5 @@
 import axios from "axios";
 const BASE_URL = "http://lecture-2-env.eba-5acarms9.us-east-1.elasticbeanstalk.com";
-// const BASE_URL = "https://software-engineering-node-fa22.herokuapp.com/api";
-// const BASE_URL = "http://localhost:4000/api";
 
 const LOGIN_API = `${BASE_URL}/api/login`;
 const USERS_API = `${BASE_URL}/api/users`;
@@ -23,7 +21,7 @@ export const deleteUser = (uid) =>
     .then(response => response.data);
 
 export const deleteUsersByUsername = (username) =>
-  axios.get(`${USERS_API}/username/${username}/delete`)
+  axios.delete(`${USERS_API}/username/${username}/delete`)
     .then(response => response.data);
 
 export const findUserByCredentials = (credentials) =>

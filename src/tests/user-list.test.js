@@ -4,9 +4,11 @@ import {HashRouter} from "react-router-dom";
 import {findAllUsers} from "../services/users-service";
 import axios from "axios";
 
+//jest.mock('axios');
+
 const MOCKED_USERS = [
-    {username: 'ellen_ripley', password: 'lv426', email: 'repley@weyland.com', id: "123"},
-    {username: 'sarah_conor', password: 'illbeback', email: 'sarah@bigjeff.com', id: "234"},
+    {username: 'ellen_ripley', password: 'lv426', email: 'repley@weyland.com', _id: "123"},
+    {username: 'sarah_conor', password: 'illbeback', email: 'sarah@bigjeff.com', _id: "234"},
 ]
 
 test('user list renders static user array', () => {
@@ -24,33 +26,25 @@ test('user list renders async', async () => {
         <HashRouter>
             <UserList users={users}/>
         </HashRouter>);
-    const linkElement = screen.getByText(/nasa/i);
+    const linkElement = screen.getByText(/alice/i);
     expect(linkElement).toBeInTheDocument();
 })
 
-describe('mock axios - user list renders mocked', () => {
-    beforeAll(() => {
-        jest.spyOn(axios, 'get').mockImplementation()
-    });
+jest.mock('axios');
 
-    afterAll(() => {
-        jest.restoreAllMocks();
-    });
+test('user list renders mocked', async () => {
+    axios.get.mockImplementation(() =>
+        Promise.resolve({ data: {users: MOCKED_USERS} }));
+    const response = await findAllUsers();
+    const users = response.users;
 
-    test('user list renders mocked', async () => {
-        axios.get.mockImplementation(() =>
-            Promise.resolve({ data: {users: MOCKED_USERS} }));
-        const response = await findAllUsers();
-        const users = response.users;
+    render(
+        <HashRouter>
+            <UserList users={users}/>
+        </HashRouter>);
 
-        render(
-            <HashRouter>
-                <UserList users={users}/>
-            </HashRouter>);
-
-        const user = screen.getByText(/ellen_ripley/i);
-        expect(user).toBeInTheDocument();
-    });
+    const user = screen.getByText(/ellen_ripley/i);
+    expect(user).toBeInTheDocument();
 });
 
 
