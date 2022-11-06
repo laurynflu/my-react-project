@@ -95,7 +95,7 @@ describe('findUserById',  () => {
     expect(newUser.email).toEqual(adam.email);
 
     // retrieve the user from the database by its primary key
-    const existingUser = await findUserById(newUser._id);
+    const existingUser = await findUserById(newUser.id);
 
     // verify retrieved user matches parameter user
     expect(existingUser.username).toEqual(adam.username);
@@ -114,23 +114,23 @@ describe('findAllUsers',  () => {
 
   // setup data before test
   beforeAll(() =>
-    // insert several known users
-    usernames.map(username =>
-      createUser({
-        username,
-        password: `${username}123`,
-        email: `${username}@stooges.com`
-      })
-    )
+      // insert several known users
+      usernames.map(username =>
+          createUser({
+            username,
+            password: `${username}123`,
+            email: `${username}@stooges.com`
+          })
+      )
   );
 
   // clean up after ourselves
-  afterAll(() =>
+  afterAll(async () => {
     // delete the users we inserted
-    usernames.map(username =>
-      deleteUsersByUsername(username)
-    )
-  );
+    for (let username of usernames) {
+      await deleteUsersByUsername(username);
+    }
+  });
 
   test('can retrieve all users from REST API', async () => {
     // retrieve all the users
@@ -141,7 +141,7 @@ describe('findAllUsers',  () => {
 
     // let's check each user we inserted
     const usersWeInserted = users.filter(
-      user => usernames.indexOf(user.username) >= 0);
+        user => usernames.indexOf(user.username) >= 0);
 
     // compare the actual users in database with the ones we sent
     usersWeInserted.forEach(user => {
