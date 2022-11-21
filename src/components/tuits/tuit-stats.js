@@ -2,7 +2,7 @@ import React from "react";
 
 const TuitStats = ({tuit, likeTuit = () => {}}) => {
     return (
-      <div className="row mt-2">
+      <div className="row">
         <div className="col">
           <i className="far fa-message me-1"></i>
           {tuit.stats && tuit.stats.replies}
